@@ -216,3 +216,6 @@ pub mod test_utils;
 
 #[cfg(feature = "ffi")]
 pub use safer_ffi_gen;
+
+#[cfg(feature = "uniffi")]
+uniffi::setup_scaffolding!();

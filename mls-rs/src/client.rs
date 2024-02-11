@@ -34,6 +34,8 @@ use alloc::boxed::Box;
 
 #[derive(Debug)]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
+#[cfg_attr(feature = "uniffi", uniffi(flat_error))]
 #[cfg_attr(all(feature = "ffi", not(test)), safer_ffi_gen::enum_to_error_code)]
 #[non_exhaustive]
 pub enum MlsError {

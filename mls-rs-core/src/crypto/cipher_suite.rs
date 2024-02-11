@@ -30,6 +30,20 @@ use mls_rs_codec::{MlsDecode, MlsEncode, MlsSize};
 #[repr(transparent)]
 pub struct CipherSuite(u16);
 
+// Note, you will need to add a forward declaration in your create to
+// use the newtype:
+//
+// uniffi::ffi_converter_forward!(
+//     mls_rs::CipherSuite,
+//     mls_rs_core::UniFfiTag,
+//     crate::UniFfiTag
+// );
+//
+// See https://github.com/mozilla/uniffi-rs/issues/1988 for details.
+
+#[cfg(feature = "uniffi")]
+uniffi::custom_newtype!(CipherSuite, u16);
+
 impl From<u16> for CipherSuite {
     fn from(value: u16) -> Self {
         CipherSuite(value)
@@ -50,6 +64,7 @@ impl Deref for CipherSuite {
     }
 }
 
+#[cfg_attr(all(feature = "ffi", not(test)), safer_ffi_gen::safer_ffi_gen)]
 impl CipherSuite {
     /// MLS_128_DHKEMX25519_AES128GCM_SHA256_Ed25519
     pub const CURVE25519_AES128: CipherSuite = CipherSuite(1);
@@ -77,6 +92,7 @@ impl CipherSuite {
     }
 
     /// An iterator over all of the default MLS ciphersuites.
+    #[cfg_attr(all(feature = "ffi", not(test)), safer_ffi_gen::safer_ffi_gen_ignore)]
     pub fn all() -> impl Iterator<Item = CipherSuite> {
         (1..=7).map(CipherSuite)
     }

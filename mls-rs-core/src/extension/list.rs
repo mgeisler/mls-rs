@@ -85,6 +85,7 @@ impl FromIterator<Extension> for ExtensionList {
     }
 }
 
+#[cfg_attr(all(feature = "ffi", not(test)), safer_ffi_gen::safer_ffi_gen)]
 impl ExtensionList {
     /// Create a new empty extension list.
     pub fn new() -> ExtensionList {

@@ -25,3 +25,6 @@ pub use mls_rs_codec;
 
 #[cfg(feature = "arbitrary")]
 pub use arbitrary;
+
+#[cfg(feature = "uniffi")]
+uniffi::setup_scaffolding!();
