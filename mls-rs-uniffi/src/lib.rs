@@ -20,7 +20,7 @@
 #[cfg(test)]
 pub mod test_utils;
 
-mod config;
+pub mod config;
 
 use std::sync::Arc;
 
@@ -592,6 +592,31 @@ from mls_rs_uniffi import CipherSuite, generate_signature_keypair
 
 signature_keypair = generate_signature_keypair(CipherSuite.CURVE25519_AES128)
 assert signature_keypair.cipher_suite == CipherSuite.CURVE25519_AES128
+"#,
+        )
+    }
+
+    #[test]
+    fn test_client_new() -> Result<(), Box<dyn std::error::Error>> {
+        run_python(
+            r#"
+from mls_rs_uniffi import *
+
+signature_keypair = generate_signature_keypair(CipherSuite.CURVE25519_AES128)
+
+class PythonGroupStateStorage(GroupStateStorage):
+    def state(self, group_id: "bytes"):
+        raise NotImplementedError
+    def epoch(self, group_id: "bytes",epoch_id: "int"):
+        raise NotImplementedError
+    def write(self, state: "GroupState",epoch_inserts: "typing.List[EpochRecord]",epoch_updates: "typing.List[EpochRecord]"):
+        raise NotImplementedError
+    def max_epoch_id(self, group_id: "bytes"):
+        raise NotImplementedError
+
+group_state_storage = PythonGroupStateStorage()
+client_config = ClientConfig(group_state_storage)
+client = Client(b"alice", signature_keypair, client_config)
 "#,
         )
     }
